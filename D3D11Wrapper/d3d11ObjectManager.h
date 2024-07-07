@@ -1,5 +1,9 @@
 #pragma once
-#define WIN32_LEAN_AND_MEAN
+
+#if !defined(WIN32_LEAN_AND_MEAN)
+	#define WIN32_LEAN_AND_MEAN
+#endif
+
 #include <d3d11.h>
 #include <d3d11_1.h>
 #include <d3d11_2.h>
@@ -12,6 +16,9 @@
 #include <cstdint>
 #include <mutex>
 #include <chrono>
+#include <atomic>
+#include <filesystem>
+
 #include "../core/Network.h"
 
 // Data
@@ -26,22 +33,6 @@
 #include "../core/ShaderResources.h"
 #include "../core/Texture.h"
 #include "../core/InputLayout.h"
-
-#include <atomic>
-#include <filesystem>
-// Include from our mgmt classes
-// Not needed yet
-
-// Global Object Manager
-
-//std::unordered_map<ID3D11InputLayout*,uint32_t> InputLayoutMap;
-//std::unordered_map<ID3D11VertexShader*, uint32_t> VertexShaderMap;
-
-//struct FObjectIndex
-//{
-//	bool bIsValid
-//};
-
 
 class D3DObjectManager
 {
@@ -169,5 +160,4 @@ public:
 	int32_t QueryInputLayout(void* pReturnPtr);
 	void SetInputLayout(void* pReturnPtr);
 	CInputLayout* GetInputLayout(uint32_t iLayoutIndex);
-
 };

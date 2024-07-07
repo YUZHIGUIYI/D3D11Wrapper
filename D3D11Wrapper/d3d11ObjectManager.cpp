@@ -29,26 +29,12 @@ D3DObjectManager::D3DObjectManager()
 	AllocConsole();
 	freopen_s((FILE**)stdout, "CONOUT$", "w", stdout);
 
-	//Timing.open("Timing.bin", std::ios::binary);
-
-	try
-	{
-		m_pTimingNetwork = std::make_unique<CNetwork>(L"127.0.0.1", 6666);
-		std::cout << "Got Network" << std::endl;
-		m_bUsingNetwork = true;
-	}
-	catch (const std::exception&)
-	{
-		std::cout << "Caught Exception" << std::endl;
-		m_bUsingNetwork = false;
-}
-
 #ifndef NDEBUG
 	Event.open("D3D11.log");
 	DEBUG_LOGLINE(Event, LOG("Initialising"));
 
 
-	std::cout << "DLL initialised" << std::endl;
+	std::cout << "DLL initialised\n";
 
 	LPSTR lls = GetCommandLineA();
 	DEBUG_LOGLINE(Event, "[ARGS] " << lls);
@@ -115,21 +101,21 @@ CFrame* D3DObjectManager::GetCurrentFrame()
 
 bool D3DObjectManager::LoadDLL()
 {
-	// Initialise wrapper
+	// Initialize wrapper
 	DEBUG_LOGLINE(Event, LOG("Loading DLL"));
 
 	HMODULE hD3D = nullptr;
 	if (IsWow64())
 	{
 		Event << LOG("Running on SysWOW64") << std::endl;
-		hD3D = LoadLibrary(L"C:\\Windows\\SysWOW64\\original_d3d11.dll");
+		hD3D = LoadLibrary(L"C:/Windows/SysWOW64/d3d11.dll");
 	}
 	else
 	{
-		hD3D = LoadLibrary(L"C:\\Windows\\System32\\original_d3d11.dll");
+		hD3D = LoadLibrary(L"C:/Windows/System32/d3d11.dll");
 	}
 
-	if (hD3D == NULL)
+	if (hD3D == nullptr)
 	{
 		DEBUG_LOGLINE(Event, LOGERR("Unable to load DLL"));
 		return false;
@@ -150,7 +136,7 @@ HMODULE D3DObjectManager::getDLL()
 void D3DObjectManager::Notify_Present()
 {
 	//DEBUG_ONLY_PRINT(LOG("HitPresent"));
-	auto tpNow = std::chrono::high_resolution_clock::now();
+	auto tpNow = std::chrono::steady_clock::now();
 
 	long long uTimeTaken = std::chrono::duration_cast<std::chrono::microseconds>(tpNow - m_tpLastFrameTime).count();
 

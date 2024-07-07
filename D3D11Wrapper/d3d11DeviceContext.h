@@ -11,36 +11,6 @@
 
 #include "../core/Frame.h"
 
-////////////////////////////////////////////////////////////////////////////
-//// Vertex Structure and TexCoord
-////
-//struct FCAPVertex
-//{
-//	Vec3f position;
-//	Vec2f texcoord;
-//	FCAPVertex(Vec3f pos, Vec2f tex)
-//	{
-//		position = pos;
-//		texcoord = tex;
-//	}
-//	FCAPVertex(float _x, float _y, float _z, float _u, float _v)
-//	{
-//		position.x = _x;
-//		position.y = _y;
-//		position.z = _z;
-//		texcoord.x = _u;
-//		texcoord.y = _v;
-//	}
-//};
-
-//enum class ECaptureState : uint8_t
-//{
-//	Await,
-//	WaitingForPresent,
-//	Capture,
-//	Finished
-//};
-
 class D3D11CustomContext : public ID3D11DeviceContext
 {
 	friend class D3D11CustomDevice;
@@ -900,6 +870,4 @@ public:
 	ULONG STDMETHODCALLTYPE AddRef(void) override;
 
 	ULONG STDMETHODCALLTYPE Release(void) override;
-
-
 };

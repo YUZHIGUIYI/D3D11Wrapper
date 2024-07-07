@@ -29,12 +29,13 @@ public:
 
 };
 
+class D3D11CustomContext;
 class D3D11CustomDevice : public ID3D11Device
 {
 protected:
 	ID3D11Device *m_d3dDevice;
 	D3DObjectManager *m_pGLOM;
-	class D3D11CustomContext * CustomContext;
+	D3D11CustomContext *CustomContext;
 
 protected:
 	void PostInitialise();
@@ -53,7 +54,7 @@ public:
 
 	virtual ID3D11Device *RealDevice();
 	virtual ID3D11DeviceContext* RealContext();
-	virtual class D3DObjectManager* GetGLOM();
+	virtual D3DObjectManager* GetGLOM();
 
 	HRESULT STDMETHODCALLTYPE CreateBuffer(
 		/* [annotation] */

@@ -18,24 +18,7 @@ std::string DirectoryPrefix = "VMRDATA\\";
 
 void D3D11CustomContext::Notify_Present()
 {
-	////std::cout << "Present Notify" << std::endl;
-	//if (CurrentState == ECaptureState::Capture)
-	//{
-	//	CurrentState = ECaptureState::Await;
-	//	std::cout << "Captured Frame was presented. Switching to Await" << std::endl;
-	//	infoOutput.close();
-	//}
-
-	//if (CurrentState == ECaptureState::WaitingForPresent)
-	//{
-	//	CurrentState = ECaptureState::Capture;
-	//	resetPointerTable();
-	//	std::cout << "Switching to Capture State" << std::endl;
-	//	// Preemptively open a output stream
-	//	infoOutput = std::ofstream(DirectoryPrefix + std::to_string(drawCallNumber) + ".vmrinfo");
-	//	infoOutput << "BufferType, BufferSize, BufferStride, BindFlags, Usage, BufferOffset, VertexInfoStride, Redirect" << std::endl;
-	//	vertexOutput = std::ofstream(DirectoryPrefix + std::to_string(vertexBufferNumber) + ".rinfo", std::ios::app);
-	//}
+	
 }
 
 //int D3D11CustomContext::SaveVBandIBFromDevice(ID3D11Device* Device, ID3D11DeviceContext* DevC, uint64_t * ibInUse)
@@ -375,11 +358,11 @@ D3D11CustomContext::D3D11CustomContext(ID3D11DeviceContext* devCon, D3DObjectMan
 	//m_eCurrentState = ECaptureState::Await;
 }
 
-D3D11CustomContext::D3D11CustomContext(ID3D11DeviceContext* dev, D3D11CustomDevice* cdev, D3DObjectManager * Parent)
+D3D11CustomContext::D3D11CustomContext(ID3D11DeviceContext* deviceContext, D3D11CustomDevice* customDevice, D3DObjectManager *Parent)
 {
 	CommonInitialise();
-	m_devContext = dev;
-	m_pFalseDevice = cdev;
+	m_devContext = deviceContext;
+	m_pFalseDevice = customDevice;
 	m_pFalseDevice->Link(this);
 	m_pGLOM = Parent;
 	//m_eCurrentState = ECaptureState::Await;
@@ -392,33 +375,11 @@ void D3D11CustomContext::VSSetConstantBuffers(UINT StartSlot, UINT NumBuffers, I
 		m_pGLOM->SetBuffer(ppConstantBuffers[i], EBufferTypes::VertexConstant, StartSlot + i);
 	}
 	
-	//if (CurrentState == ECaptureState::Capture)
-	//{
-	//	//std::cout << "Capturing " << NumBuffers << " Buffers" << std::endl;
-	//	ID3D11Device *dev;
-	//	GetDevice(&dev);
-
-	//	for (uint32_t i = 0; i < NumBuffers; ++i)
-	//	{
-	//		// SpecialCasing
-	//		/*if (NumBuffers == 14 && i == 11 && ppConstantBuffers[11] != nullptr)
-	//		{
-	//			std::cout << "AnimBinding is " << vsBufferNumber + i << std::endl;
-	//			DumpVSConstBufferWithName(dev, m_devContext, &ppConstantBuffers[i], "AnimationData." + std::to_string(vsBufferNumber + i));
-	//		}*/
-	//		//else if (ppConstantBuffers[i])
-	//		//	DumpVSConstBuffer(dev, m_devContext, &ppConstantBuffers[i]); // Don't use the abstract layer here
-	//	}
-	//}
-	//
-	//vsBufferNumber += NumBuffers;
 	m_devContext->VSSetConstantBuffers(StartSlot, NumBuffers, ppConstantBuffers);
 }
 
 void D3D11CustomContext::PSSetShaderResources(UINT StartSlot, UINT NumViews, ID3D11ShaderResourceView* const* ppShaderResourceViews)
 {
-	//DEBUG_LINE(m_pGLOM->Event, LOG("\tPSSetShaderResources"));
-
 	for (uint32_t i = 0; i < NumViews; ++i)
 	{
 		m_pGLOM->SetResourceView(ppShaderResourceViews[i], ESRVTypes::PixelSRV, StartSlot + i);
@@ -429,66 +390,24 @@ void D3D11CustomContext::PSSetShaderResources(UINT StartSlot, UINT NumViews, ID3
 
 void D3D11CustomContext::PSSetShader(ID3D11PixelShader* pPixelShader, ID3D11ClassInstance* const* ppClassInstances, UINT NumClassInstances)
 {
-	//DEBUG_LINE(m_pGLOM->Event, LOG("\tPSSetShader"));
-	//m_pGLOM->QueryShader(pPixelShader);
 	m_pGLOM->SetShader(pPixelShader, EShaderTypes::Pixel);
 	m_devContext->PSSetShader(pPixelShader, ppClassInstances, NumClassInstances);
 }
 
 void D3D11CustomContext::PSSetSamplers(UINT StartSlot, UINT NumSamplers, ID3D11SamplerState* const* ppSamplers)
 {
-	//DEBUG_LINE(m_pGLOM->Event, LOG("\tPSSetSamplers"));
 	m_devContext->PSSetSamplers(StartSlot, NumSamplers, ppSamplers);
 }
 
 void D3D11CustomContext::VSSetShader(ID3D11VertexShader* pVertexShader, ID3D11ClassInstance* const* ppClassInstances, UINT NumClassInstances)
 {
-	//DEBUG_LINE(m_pGLOM->Event, LOG("\tVSSetShader"));
-
-	//m_pGLOM->QueryShader(pVertexShader);
 	m_pGLOM->SetShader(pVertexShader, EShaderTypes::Vertex);
 
-	//if (CurrentState == ECaptureState::Capture)
-	//{
-	//	auto location = VertexShaderMap.find(pVertexShader);
-	//	if(location != VertexShaderMap.end())
-	//		infoOutput << "VSShader,0,0,0,0,0,0,"<< location->second << std::endl;
-	//}
 	m_devContext->VSSetShader(pVertexShader, ppClassInstances, NumClassInstances);
 }
 
 void D3D11CustomContext::DrawIndexed(UINT IndexCount, UINT StartIndexLocation, INT BaseVertexLocation)
 {
-	//DEBUG_LINE(m_pGLOM->Event, LOG("DrawIndexed"));
-	//if (GetAsyncKeyState(VK_DOWN) & 0x8000 && CurrentState == ECaptureState::Await)
-	//{
-	//	CurrentState = ECaptureState::WaitingForPresent;
-	//	std::cout << "Changing Process State from Await to AwaitPresent" << std::endl;
-	//}
-
-	//if (CurrentState == ECaptureState::Capture)
-	//{
-	//	ID3D11Device *dev;
-	//	GetDevice(&dev);
-
-	//	//CheckVB(IndexCount, StartIndexLocation, BaseVertexLocation);
-	//	uint64_t indexBufferID = 0;
-	//	if (SaveVBandIBFromDevice(dev, m_devContext, &indexBufferID) == 1)
-	//	{
-	//		std::cout << "Error capturing buffers for Draw Call " << drawCallNumber << std::endl;
-	//	}
-
-	//	vertexOutput << "DrawIndexed," << indexBufferID << "," << IndexCount << "," << StartIndexLocation << "," << BaseVertexLocation << std::endl;
-
-	//	// Last line of VMR is call info
-	//	infoOutput << "DrawInfo," << IndexCount << "," << StartIndexLocation << "," << BaseVertexLocation << std::endl;
-	//	infoOutput.close();
-	//	infoOutput = std::ofstream(DirectoryPrefix + std::to_string(drawCallNumber + 1) + ".vmrinfo");
-	//	infoOutput << "BufferType, BufferSize, BufferStride, BindFlags, Usage, BufferOffset, VertexInfoStride, Redirect" << std::endl;
-	//}
-
-	//++drawCallNumber;
-
 	m_pGLOM->Notify_Draw(IndexCount, StartIndexLocation, BaseVertexLocation, ECallsTypes::DrawIndexed);
 	m_devContext->DrawIndexed(IndexCount, StartIndexLocation, BaseVertexLocation);
 }

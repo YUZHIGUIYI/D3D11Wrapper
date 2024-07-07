@@ -53,6 +53,14 @@ D3D11Wrapper/Engine*
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
+# CMake build
+build/
+
+# CLion
+cmake-build-debug/
+cmake-build-release/
+.idea/
+
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
